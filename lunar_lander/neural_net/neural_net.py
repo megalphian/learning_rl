@@ -129,8 +129,8 @@ def get_accuracy_value(Y_hat, Y):
     Y_hat_ = convert_prob_into_class(Y_hat)
     return (Y_hat_ == Y).all(axis=0).mean()
 
-def train(X, Y, nn_architecture, epochs, learning_rate):
-    params_values = init_layers(nn_architecture, 2)
+def train(X, Y, nn_architecture, epochs, learning_rate, seed=2):
+    params_values = init_layers(nn_architecture, seed)
     cost_history = []
     accuracy_history = []
     
@@ -150,3 +150,20 @@ def predict(X, params_values, nn_architecture):
     Y_hat, _ = full_forward_propagation(X, params_values, nn_architecture)
     Y_hat = convert_prob_into_class(Y_hat)
     return Y_hat
+
+class NeuralNet:
+    def __init__(self, nn_architecture, seed=99):
+        self.nn_architecture = nn_architecture
+        self.params_values = init_layers(nn_architecture, seed)
+    
+    def train(self, X, Y, epochs, learning_rate):
+        self.params_values, self.cost_history, self.accuracy_history = train(X, Y, self.nn_architecture, epochs, learning_rate)
+
+    def predict(self, X):
+        return predict(X, self.params_values, self.nn_architecture)
+    
+    def get_params(self):
+        return self.params_values
+    
+    def set_params(self, param_values):
+        self.params_values = param_values
